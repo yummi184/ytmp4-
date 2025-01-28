@@ -1,32 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Downloader</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HENZ</title> YouTube Downloader</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; color: #333; }
+        input, select, button { margin: 10px; padding: 10px; font-size: 16px; }
+        img { max-width: 100%; margin-top: 20px; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>YouTube Downloader</h1>
-    <p>Download YouTube videos or audio easily by entering a link or search term!</p>
+    <h1>Simple YouTube Downloader</h1>
+    <p>Enter a YouTube URL to download:</p>
 
-    <input type="text" id="url-input" placeholder="Enter YouTube link or search term">
-    <button id="fetch-info">Fetch Video Info</button>
+    <input type="text" id="url-input" placeholder="Enter YouTube URL">
+    <button id="fetch-info">Get Video Info</button>
 
-    <div id="video-info" class="hidden">
-      <img id="thumbnail" alt="Video Thumbnail">
-      <h2 id="title"></h2>
-
-      <div id="format-options">
-        <label for="format-select">Choose Format:</label>
-        <select id="format-select"></select>
-      </div>
-
-      <button id="download-btn">Download</button>
+    <div id="video-details" style="display: none;">
+        <h2 id="title"></h2>
+        <img id="thumbnail" alt="Video Thumbnail">
+        <div>
+            <label for="quality-select">Choose Quality:</label>
+            <select id="quality-select"></select>
+        </div>
+        <button id="download-btn">Download</button>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <script>
+        const fetchInfoButton = document.getElementById('fetch-info');
+        const videoDetails = document.getElementById('video-details');
+        const urlInput = document.getElementById('url-input');
+        const title = document.getElementById('title');
+        const thumbnail = document.getElementById('thumbnail');
+        const qualitySelect = document.getElementById('quality-select');
+        const downloadButton = document.getElementById('download-btn');
+
+        fetchInfoButton.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert('Please enter a valid YouTube URL!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/info?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                title.textContent = data.title;
+                thumbnail.src = data.thumbnail;
+                videoDetails.style.display = 'block';
+
+                qualitySelect.innerHTML = '';
+                data.formats.forEach(format => {
+                    const option = document.createElement('option');
+                    option.value = format.itag;
+                    option.textContent = format.quality;
+                    qualitySelect.appendChild(option);
+                });
+            } catch (err) {
+                alert('Error fetching video info. Please check the URL.');
+            }
+        });
+
+        downloadButton.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            const quality = qualitySelect.value;
+
+            if (!url || !quality) {
+                alert('Please select a valid URL and quality!');
+                return;
+            }
+
+            window.location.href = `/download?url=${encodeURIComponent(url)}&quality=${quality}`;
+        });
+    </script>
 </body>
-    </html>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Downloader</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube Downloader</h1>
+    <p>Download YouTube videos or audio easily by entering a link or search term!</p>
+
+    <input type="text" id="url-input" placeholder="Enter YouTube link or search term">
+    <button id="fetch-info">Fetch Video Info</button>
+
+    <div id="video-info" class="hidden">
+      <img id="thumbnail" alt="Video Thumbnail">
+      <h2 id="title"></h2>
+
+      <div id="format-options">
+        <label for="format-select">Choose Format:</label>
+        <select id="format-select"></select>
+      </div>
+
+      <button id="download-btn">Download</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+    </html>
